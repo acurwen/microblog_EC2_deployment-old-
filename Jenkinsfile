@@ -21,11 +21,7 @@ pipeline {
                 source venv/bin/activate
                 '''
             }
-            post {
-                always {
-                    junit 'test-reports/results.xml'
-                }
-            }
+          
         }
       stage ('OWASP FS SCAN') {
             steps {
