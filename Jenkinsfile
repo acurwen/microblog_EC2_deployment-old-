@@ -4,7 +4,25 @@ pipeline {
         stage ('Build') {
             steps {
                 sh '''#!/bin/bash
-                <enter your code here>
+                /* Creating virtual environment */
+                python3.9 -m venv venv
+
+                /* activate virtual environment */
+                source venv/bin/activate
+
+                /* install and upgrade python package manager */
+                pip install pip --upgrade
+                
+                /* install all dependencies */
+                pip install -r requirements.txt
+                pip install gunicorn pymysql cryptography
+                
+                /* setting environmental variables */
+                FLASK_APP=microblog.py
+                
+                /* setting up databases and compiling translation files */
+                flask translate compile
+                flask db upgrade
                 '''
             }
         }
@@ -42,7 +60,11 @@ pipeline {
       stage ('Deploy') {
             steps {
                 sh '''#!/bin/bash
-                <enter your code here>
+                /* activate virtual environment */
+                source venv/bin/activate
+            
+                /* start gunicorn and the app */
+                gunicorn -b :5000 -w 4 microblog:app
                 '''
             }
         }
